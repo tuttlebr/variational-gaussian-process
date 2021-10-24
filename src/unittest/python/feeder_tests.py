@@ -1,13 +1,9 @@
 import unittest
-from pandas.core.frame import DataFrame
+
 from config import Config
-from feeder import (
-    dataframe_cointegration,
-    dataframe_linear_interpolation,
-    dataframe_pivot,
-    dataframe_split_by_date,
-    read_csv,
-)
+from feeder import (dataframe_cointegration, dataframe_linear_interpolation,
+                    dataframe_pivot, dataframe_split_by_date, read_csv)
+from pandas.core.frame import DataFrame
 
 
 class Testing(unittest.TestCase):

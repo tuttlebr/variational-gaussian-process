@@ -1,17 +1,15 @@
 from logging import basicConfig, info
 
 basicConfig(
-    format="%(asctime)s %(message)s",
-    level="CRITICAL",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(asctime)s %(message)s", level="CRITICAL", datefmt="%Y-%m-%d %H:%M:%S",
 )
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import tensorflow as tf
 import tensorflow_probability as tfp
-from matplotlib import pylab as plt
 from config import Config
+from matplotlib import pylab as plt
 
 # set color scheme
 sns.set(rc={"figure.figsize": (24, 12)})
@@ -30,9 +28,7 @@ class RBFKernelFn(tf.keras.layers.Layer):
         super(RBFKernelFn, self).__init__(**kwargs)
 
         self._amplitude = self.add_weight(
-            initializer=tf.constant_initializer(0),
-            dtype=np.float64,
-            name="amplitude",
+            initializer=tf.constant_initializer(0), dtype=np.float64, name="amplitude",
         )
 
         self._length_scale = self.add_weight(
@@ -49,9 +45,7 @@ class RBFKernelFn(tf.keras.layers.Layer):
     def kernel(self):
         amplitude = tf.nn.softplus(0.1 * self._amplitude, name="amplitude")
 
-        length_scale = tf.nn.softplus(
-            5.0 * self._length_scale, name="length_scale"
-        )
+        length_scale = tf.nn.softplus(5.0 * self._length_scale, name="length_scale")
 
         return tfp.math.psd_kernels.ExponentiatedQuadratic(
             amplitude=amplitude, length_scale=length_scale
@@ -65,9 +59,7 @@ def vgp_model(learning_rate=Config.learning_rate):
     model = tf.keras.Sequential(name="vgpModel")
 
     model.add(
-        tf.keras.layers.InputLayer(
-            input_shape=[Config.top_n_peer_count], name="inputs"
-        )
+        tf.keras.layers.InputLayer(input_shape=[Config.top_n_peer_count], name="inputs")
     )
 
     for _ in range(Config.dense_layer_count):
@@ -97,9 +89,9 @@ def vgp_model(learning_rate=Config.learning_rate):
             kernel_provider=RBFKernelFn(),
             event_shape=[1],
             inducing_index_points_initializer=tf.constant_initializer(
-                np.linspace(
-                    *x_range, num=Config.num_inducing_points, dtype=np.float64
-                )[..., np.newaxis]
+                np.linspace(*x_range, num=Config.num_inducing_points, dtype=np.float64)[
+                    ..., np.newaxis
+                ]
             ),
             unconstrained_observation_noise_variance_initializer=tf.constant_initializer(
                 np.array(Config.constant_initializer).astype(np.float64)
@@ -127,12 +119,12 @@ def get_distributions(data, model, distributions=300):
         y = model.y_tf_scaler.inverse_transform(y.reshape(-1, 1)).ravel()
         samp = pd.DataFrame(data={"dist_{}".format(i): y})
         df = pd.concat([df, samp], axis=1)
-    df["y_hat_lower"] = df[
-        df.columns[df.columns.str.contains("dist")]
-    ].quantile(axis="columns", q=q_lower)
-    df["y_hat_upper"] = df[
-        df.columns[df.columns.str.contains("dist")]
-    ].quantile(axis="columns", q=q_higher)
+    df["y_hat_lower"] = df[df.columns[df.columns.str.contains("dist")]].quantile(
+        axis="columns", q=q_lower
+    )
+    df["y_hat_upper"] = df[df.columns[df.columns.str.contains("dist")]].quantile(
+        axis="columns", q=q_higher
+    )
     df["y_hat"] = df[df.columns[df.columns.str.contains("dist")]].quantile(
         axis="columns", q=0.5
     )
@@ -141,9 +133,7 @@ def get_distributions(data, model, distributions=300):
 
 
 def plot_uncertainty(
-    df_prediction,
-    threshold_date,
-    title="Variational Gaussian Process Backcast",
+    df_prediction, threshold_date, title="Variational Gaussian Process Backcast",
 ):
     date_split = pd.to_datetime(threshold_date)
     df_prediction[Config.date_col_name] = pd.to_datetime(
@@ -165,11 +155,7 @@ def plot_uncertainty(
     fig, ax = plt.subplots()
 
     ax.plot(
-        df_prediction.ds.values,
-        uncertainty.values,
-        lw=1,
-        color=c4,
-        alpha=0.005,
+        df_prediction.ds.values, uncertainty.values, lw=1, color=c4, alpha=0.005,
     )
     ax.plot(
         x,

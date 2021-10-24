@@ -1,13 +1,12 @@
 from logging import basicConfig, info
 
 basicConfig(
-    format="%(asctime)s %(message)s",
-    level="INFO",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(asctime)s %(message)s", level="INFO", datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 import os
 from pathlib import Path
+
 import tensorflow as tf
 from attrdict import AttrDict
 from tensorflow.python.client import device_lib
@@ -22,9 +21,7 @@ def check_tensor_core_gpu_present():
     for line in local_device_protos:
         if "compute capability" in str(line):
             compute_capability = float(
-                line.physical_device_desconfig_dict.split(
-                    "compute capability: "
-                )[-1]
+                line.physical_device_desconfig_dict.split("compute capability: ")[-1]
             )
             if compute_capability >= 7.0:
                 return True
@@ -65,11 +62,7 @@ def initialize_globals():
     config_dict.kernel_size = 730
     config_dict.num_inducing_points = int(config_dict.kernel_size * 0.85)
 
-    info(
-        "[+] Available devices: {}".format(
-            tf.config.list_physical_devices("GPU")
-        )
-    )
+    info("[+] Available devices: {}".format(tf.config.list_physical_devices("GPU")))
 
     if config_dict.train:
         info("[+] Training")

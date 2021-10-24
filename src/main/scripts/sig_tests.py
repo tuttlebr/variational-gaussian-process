@@ -1,9 +1,7 @@
 from logging import basicConfig, info
 
 basicConfig(
-    format="%(asctime)s %(message)s",
-    level="INFO",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(asctime)s %(message)s", level="INFO", datefmt="%Y-%m-%d %H:%M:%S",
 )
 from scipy.stats import mannwhitneyu, ttest_ind
 

@@ -1,9 +1,7 @@
 from logging import basicConfig, info
 
 basicConfig(
-    format="%(asctime)s %(message)s",
-    level="INFO",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(asctime)s %(message)s", level="INFO", datefmt="%Y-%m-%d %H:%M:%S",
 )
 import multiprocessing as mp
 
@@ -43,11 +41,7 @@ def read_csv(
     dataframe.columns = dataframe.columns.astype(str)
 
     if (
-        len(
-            dataframe.groupby(embed).filter(
-                lambda x: x[embed].count() > min_samples
-            )
-        )
+        len(dataframe.groupby(embed).filter(lambda x: x[embed].count() > min_samples))
         == 0
     ):
         info(
@@ -56,9 +50,7 @@ def read_csv(
             )
         )
 
-    return dataframe.groupby(embed).filter(
-        lambda x: x[embed].count() > min_samples
-    )
+    return dataframe.groupby(embed).filter(lambda x: x[embed].count() > min_samples)
 
 
 # 2
@@ -82,8 +74,7 @@ def dataframe_pivot(dataframe):
 # 3
 def dataframe_linear_interpolation(dataframe):
     dataframe = [
-        dataframe[col].interpolate(method="linear")
-        for col in dataframe.columns
+        dataframe[col].interpolate(method="linear") for col in dataframe.columns
     ]
     dataframe = pd.concat(dataframe, axis=1, keys=[s.name for s in dataframe])
 
@@ -95,9 +86,7 @@ def dataframe_linear_interpolation(dataframe):
 
 
 # 4
-def dataframe_split_by_date(
-    dataframe, split_on_date, index=Config.date_col_name
-):
+def dataframe_split_by_date(dataframe, split_on_date, index=Config.date_col_name):
 
     train_df = dataframe[dataframe[index] < split_on_date]
 
@@ -107,9 +96,7 @@ def dataframe_split_by_date(
 
 
 # 5
-def dataframe_cointegration(
-    train_dataframe, eval_dataframe, target_embed_id_id
-):
+def dataframe_cointegration(train_dataframe, eval_dataframe, target_embed_id_id):
 
     train_dataframe_ = train_dataframe.rename(
         columns={str(target_embed_id_id): Config.kpi_col_name}
@@ -134,8 +121,7 @@ def dataframe_cointegration(
                 )
                 for i, row in enumerate(
                     train_dataframe_coint.drop(
-                        labels=[Config.date_col_name, Config.kpi_col_name],
-                        axis=1,
+                        labels=[Config.date_col_name, Config.kpi_col_name], axis=1,
                     )
                 )
             ],

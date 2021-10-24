@@ -1,28 +1,21 @@
 from logging import basicConfig, info
 
 basicConfig(
-    format="%(asctime)s %(message)s",
-    level="CRITICAL",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(asctime)s %(message)s", level="CRITICAL", datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-import tensorflow as tf
 import os
 import uuid
-from sklearn.preprocessing import StandardScaler as DataScaler
+
 import numpy as np
 import pandas as pd
-
+import tensorflow as tf
 from config import Config
 from evaluate import performance_report
-from feeder import (
-    dataframe_cointegration,
-    dataframe_linear_interpolation,
-    dataframe_pivot,
-    dataframe_split_by_date,
-    read_csv,
-    retrieve_inputs,
-)
+from feeder import (dataframe_cointegration, dataframe_linear_interpolation,
+                    dataframe_pivot, dataframe_split_by_date, read_csv,
+                    retrieve_inputs)
+from sklearn.preprocessing import StandardScaler as DataScaler
 from vgpmodel import get_distributions, plot_uncertainty, vgp_model
 
 
@@ -42,9 +35,7 @@ class VGPModel:
             log_dir=os.path.join(Config.log_directory)
         )
 
-        self.auto_decay = tf.keras.callbacks.ReduceLROnPlateau(
-            patience=2, factor=0.8
-        )
+        self.auto_decay = tf.keras.callbacks.ReduceLROnPlateau(patience=2, factor=0.8)
 
         self.callbacks = [
             self.early_stopping_callback,
@@ -67,12 +58,8 @@ class VGPModel:
             self.train_df, self.eval_df, self.embed_id
         )
 
-        self.x_train, self.y_train = retrieve_inputs(
-            self.train_df, self.peer_list
-        )
-        self.x_eval, self.y_eval = retrieve_inputs(
-            self.eval_df, self.peer_list
-        )
+        self.x_train, self.y_train = retrieve_inputs(self.train_df, self.peer_list)
+        self.x_eval, self.y_eval = retrieve_inputs(self.eval_df, self.peer_list)
 
         x_tf_scaler = DataScaler()
         x_tf_scaler.fit(self.x_train)
@@ -93,16 +80,10 @@ class VGPModel:
 
         # Ideal steps per train/eval
 
-        STEPS_PER_EPOCH = (
-            self.y_train.shape[0] // Config.batch_size_per_replica
-        )
-        VALIDATION_STEPS = (
-            self.y_eval.shape[0] // Config.batch_size_per_replica
-        )
+        STEPS_PER_EPOCH = self.y_train.shape[0] // Config.batch_size_per_replica
+        VALIDATION_STEPS = self.y_eval.shape[0] // Config.batch_size_per_replica
 
-        optimizer = tf.keras.optimizers.Adam(
-            learning_rate=Config.learning_rate
-        )
+        optimizer = tf.keras.optimizers.Adam(learning_rate=Config.learning_rate)
 
         self.model.compile(
             loss=var_loss,
@@ -136,9 +117,7 @@ def plot_distributions(model_object):
     df_train_eval = pd.concat(
         [model_object.train_df, model_object.eval_df], ignore_index=True
     )
-    df_all = df_train_eval.merge(
-        df_predictions, left_index=True, right_index=True
-    )
+    df_all = df_train_eval.merge(df_predictions, left_index=True, right_index=True)
     key = "{}-{}".format(model_object.embed_id, uuid.uuid4())
     df_all.to_csv("dist_{}.csv".format(key), index=False)
     titles = "Variational Gaussian Process Backcast Store Number {}".format(

@@ -1,14 +1,11 @@
 from logging import basicConfig, info
 
 basicConfig(
-    format="%(asctime)s %(message)s",
-    level="INFO",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(asctime)s %(message)s", level="INFO", datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 import variational_gaussian_process as bf
 from config import Config
-
 
 for embed_id in Config.embedding_split:
     try:
