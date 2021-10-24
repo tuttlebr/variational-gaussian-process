@@ -1,0 +1,10 @@
+tensorflow-probability
+statsmodels
+joblib
+scikit-learn
+scipy
+seaborn
+pandas
+attrdict
+jupyterlab
+pybuilder
