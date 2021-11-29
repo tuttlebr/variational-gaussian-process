@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:2.6.0-gpu-jupyter
+FROM nvcr.io/nvidia/tensorflow:21.11-tf2-py3
 
 ENV PYTHONPATH "${PYTHONPATH}:/app/src/main/python"
 ENV PYTHONPATH "${PYTHONPATH}:/app/src/main/scripts"
@@ -9,5 +9,4 @@ WORKDIR /app
 
 COPY . .
 
-RUN mv src/main/scripts/71ssl-verify /etc/apt/apt.conf.d/71ssl-verify \
-    && pip install -r src/main/python/requirements.txt
+RUN pip install -r src/main/python/requirements.txt

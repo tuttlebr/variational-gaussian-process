@@ -1,4 +1,4 @@
-tensorflow-probability
+tensorflow-probability~=0.14.1
 statsmodels
 joblib
 scikit-learn
